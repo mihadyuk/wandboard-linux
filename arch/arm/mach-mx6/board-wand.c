@@ -838,6 +838,16 @@ static const struct spi_imx_master wand_spi2_data = {
 	.num_chipselect = ARRAY_SIZE(wand_spi2_chipselect),
 };
 
+/* spi3*/
+static const int wand_spi3_chipselect[] = { MXC_SPI_CS(0),
+											MXC_SPI_CS(1),
+											IMX_GPIO_NR(4, 26)};
+
+static const struct spi_imx_master wand_spi3_data = {
+	.chipselect     = (int *)wand_spi3_chipselect,
+	.num_chipselect = ARRAY_SIZE(wand_spi3_chipselect),
+};
+
 /* ------------------------------------------------------------------------ */
 
 static void __init wand_init_spi(void) {
@@ -853,9 +863,18 @@ static void __init wand_init_spi(void) {
    there can be issues using the dedicated mux modes for cs.*/
 	IMX6_SETUP_PAD( EIM_RW__GPIO_2_26 );
 	IMX6_SETUP_PAD( EIM_LBA__GPIO_2_27 );
-        
+
+	/*spi3 */
+	IMX6_SETUP_PAD( DISP0_DAT0__ECSPI3_SCLK );
+	IMX6_SETUP_PAD( DISP0_DAT1__ECSPI3_MOSI );
+	IMX6_SETUP_PAD( DISP0_DAT2__ECSPI3_MISO );
+	IMX6_SETUP_PAD( DISP0_DAT3__ECSPI3_SS0 );
+	IMX6_SETUP_PAD( DISP0_DAT4__ECSPI3_SS1 );
+	IMX6_SETUP_PAD( DISP0_DAT5__GPIO_4_26 );
+
 	imx6q_add_ecspi(0, &wand_spi1_data);
 	imx6q_add_ecspi(1, &wand_spi2_data);
+	imx6q_add_ecspi(2, &wand_spi3_data);
 }
 
 
@@ -1044,7 +1063,11 @@ static void __init wand_board_init(void) {
 	wand_init_usb();
 	wand_init_ipu();
 	wand_init_hdmi();
-	wand_init_lcd();
+	/*
+	 * commented lcd due to gpios and spi3 is used
+	 * on the DISP0_DAT0 - DISP0_DAT9
+	 * */
+	//wand_init_lcd();
 	wand_init_wifi();
 	wand_init_bluetooth();
 	wand_init_pm();
