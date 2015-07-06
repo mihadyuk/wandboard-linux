@@ -812,6 +812,17 @@ static __init void wand_init_external_gpios(void) {
 	gpio_export(IMX_GPIO_NR(3, 8), true);
 	gpio_request(IMX_GPIO_NR(4, 5), "external_gpio_7");
 	gpio_export(IMX_GPIO_NR(4, 5), true);
+
+	//init extra gpios
+	IMX6_SETUP_PAD( DISP0_DAT6__GPIO_4_27 );
+	IMX6_SETUP_PAD( DISP0_DAT7__GPIO_4_28 );
+	IMX6_SETUP_PAD( DISP0_DAT8__GPIO_4_29 );
+	IMX6_SETUP_PAD( DISP0_DAT9__GPIO_4_30 );
+	IMX6_SETUP_PAD( DISP0_DAT10__GPIO_4_31 );
+	IMX6_SETUP_PAD( DISP0_DAT11__GPIO_5_5 );
+	IMX6_SETUP_PAD( DISP0_DAT12__GPIO_5_6 );
+	IMX6_SETUP_PAD( DISP0_DAT13__GPIO_5_7 );
+	IMX6_SETUP_PAD( DISP0_DAT14__GPIO_5_8 );
 }
 
 
