@@ -28,6 +28,8 @@
 #include <linux/kernel.h>
 #include <linux/memblock.h>
 #include <linux/phy.h>
+#include <linux/spi/spidev.h>
+#include <linux/spi/spi.h>
 
 #include <mach/ahci_sata.h>
 #include <mach/common.h>
@@ -859,6 +861,31 @@ static const struct spi_imx_master wand_spi3_data = {
 	.num_chipselect = ARRAY_SIZE(wand_spi3_chipselect),
 };
 
+static const struct spi_board_info spidev_cfg[] /*__initdata*/ = {
+ {
+    .modalias = "spidev",
+    .max_speed_hz = 20000000UL,
+    .bus_num = 2,
+    .chip_select = 0,
+    .mode = SPI_MODE_0,
+ },
+ {
+    .modalias = "spidev",
+    .max_speed_hz = 20000000UL,
+    .bus_num = 2,
+	.chip_select = 1,
+	.mode = SPI_MODE_0,
+ },
+ {
+    .modalias = "spidev",
+    .max_speed_hz = 20000000UL,
+    .bus_num = 2,
+ 	.chip_select = 2,
+ 	.mode = SPI_MODE_0,
+ },
+
+};
+
 /* ------------------------------------------------------------------------ */
 
 static void __init wand_init_spi(void) {
@@ -886,6 +913,9 @@ static void __init wand_init_spi(void) {
 	imx6q_add_ecspi(0, &wand_spi1_data);
 	imx6q_add_ecspi(1, &wand_spi2_data);
 	imx6q_add_ecspi(2, &wand_spi3_data);
+
+	/*register spidev.*/
+	spi_register_board_info(spidev_cfg, ARRAY_SIZE(spidev_cfg));
 }
 
 
