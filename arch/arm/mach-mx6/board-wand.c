@@ -556,7 +556,7 @@ static struct ipuv3_fb_platform_data wand_lvds_fb[] = {
 
 /* ------------------------------------------------------------------------ */
 
-
+#if 0
 static void __init wand_init_lcd(void) {
 	/* TTL */
 	IMX6_SETUP_PAD( DI0_DISP_CLK__IPU1_DI0_DISP_CLK );
@@ -620,7 +620,7 @@ static void __init wand_init_lcd(void) {
 
 	imx6q_add_ipuv3fb(1, &wand_lvds_fb[0]);
 }
-
+#endif
 
 /****************************************************************************
  *                                                                          
@@ -834,7 +834,7 @@ static __init void wand_init_external_gpios(void) {
  *                                                                          
  ****************************************************************************/
 
-static const int wand_spi1_chipselect[] = { IMX_GPIO_NR(2, 30) };
+static const int wand_spi1_chipselect[] = { IMX_GPIO_NR(2, 30), MXC_SPI_CS(1) };
 
 /* platform device */
 static const struct spi_imx_master wand_spi1_data = {
@@ -862,6 +862,20 @@ static const struct spi_imx_master wand_spi3_data = {
 };
 
 static const struct spi_board_info spidev_cfg[] /*__initdata*/ = {
+ {
+	.modalias = "spidev",
+	.max_speed_hz = 20000000UL,
+	.bus_num = 0,
+	.chip_select = 0,
+	.mode = SPI_MODE_0,
+ },
+ {
+ 	.modalias = "spidev",
+ 	.max_speed_hz = 20000000UL,
+ 	.bus_num = 0,
+ 	.chip_select = 1,
+ 	.mode = SPI_MODE_0,
+ },
  {
     .modalias = "spidev",
     .max_speed_hz = 20000000UL,
@@ -893,6 +907,7 @@ static void __init wand_init_spi(void) {
 	IMX6_SETUP_PAD( EIM_D17__ECSPI1_MISO );
 	IMX6_SETUP_PAD( EIM_D18__ECSPI1_MOSI );
 	IMX6_SETUP_PAD( EIM_EB2__GPIO_2_30 );
+	IMX6_SETUP_PAD( KEY_COL2__ECSPI1_SS1 );
 
 	IMX6_SETUP_PAD( EIM_CS0__ECSPI2_SCLK );
 	IMX6_SETUP_PAD( EIM_CS1__ECSPI2_MOSI );
