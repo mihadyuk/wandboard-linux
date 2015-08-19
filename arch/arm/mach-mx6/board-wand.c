@@ -218,7 +218,7 @@ static __init void wand_init_uart(void) {
  * Initialize sound (SSI, ASRC, AUD3 channel and S/PDIF)
  *                                                                          
  ****************************************************************************/
-
+#if 0
 extern struct mxc_audio_platform_data wand_audio_channel_data;
 
 /* This function is called as a callback from the audio channel data struct */
@@ -249,6 +249,7 @@ static int wand_audio_clock_enable(void) {
         
 	return 0;        
 }
+
 
 /* ------------------------------------------------------------------------ */
 
@@ -324,14 +325,18 @@ void __init wand_init_audio(void) {
 	imx6q_add_spdif_dai();
 	imx6q_add_spdif_audio_device();
 }
-
+#endif
 
 /*****************************************************************************
  *                                                                           
  * Init FEC and AR8031 PHY
  *                                                                            
  *****************************************************************************/
-
+/*
+ * @todo
+ * Find out how to configure ET1011C2-CI-D. Now this task has low priority.
+ * */
+#if 0
 static int wand_fec_phy_init(struct phy_device *phydev) {
 	unsigned short val;
 
@@ -401,14 +406,14 @@ static __init void wand_init_ethernet(void) {
 	gpio_set_value(WAND_RGMII_RST, 1);
 	imx6_init_fec(wand_fec_data);
 }
-
+#endif
 
 /****************************************************************************
  *                                                                          
  * USB
  *                                                                          
  ****************************************************************************/
-
+#if 0
 static void wand_usbotg_vbus(bool on) {
         gpio_set_value_cansleep(WAND_USB_OTG_PWR, !on);
 }
@@ -435,14 +440,14 @@ static __init void wand_init_usb(void) {
         gpio_request(WAND_USB_H1_OC, "usbh1 oc");
 	gpio_direction_input(WAND_USB_H1_OC);
 }
-
+#endif
 
 /****************************************************************************
  *                                                                          
  * IPU
  *                                                                          
  ****************************************************************************/
-
+#if 0
 static struct imx_ipuv3_platform_data wand_ipu_data[] = {
 	{
 		.rev		= 4,
@@ -458,8 +463,9 @@ static struct imx_ipuv3_platform_data wand_ipu_data[] = {
 static __init void wand_init_ipu(void) {
 	imx6q_add_ipuv3(0, &wand_ipu_data[0]);
 }
+#endif
 
-
+#if 0
 /****************************************************************************
  *                                                                          
  * HDMI
@@ -517,6 +523,7 @@ static void wand_init_hdmi(void) {
 	imx6q_add_hdmi_soc_dai();        
 	mxc_iomux_set_gpr_register(0, 0, 1, 1);
 }
+#endif
 
 
 /****************************************************************************
@@ -524,7 +531,7 @@ static void wand_init_hdmi(void) {
  * LCD/LVDS/TTL
  *                                                                          
  ****************************************************************************/
-
+#if 0
 static struct fsl_mxc_lcd_platform_data wand_lcdif_data = {
 	.ipu_id = 0,
 	.disp_id = 0,
@@ -621,13 +628,14 @@ static void __init wand_init_lcd(void) {
 	imx6q_add_ipuv3fb(1, &wand_lvds_fb[0]);
 }
 #endif
+#endif
 
 /****************************************************************************
  *                                                                          
  * WiFi
  *                                                                          
  ****************************************************************************/
-
+#if 0
 /* assumes SD/MMC pins are set; call after wand_init_sd() */
 static __init void wand_init_wifi(void) {
         /* ref_on, enable 32k clock */
@@ -658,6 +666,7 @@ static __init void wand_init_wifi(void) {
 	gpio_request(WAND_WL_HOST_WAKE, "wl_host_wake");
 	gpio_direction_input(WAND_WL_HOST_WAKE);
 }
+#endif
 
 
 /****************************************************************************
@@ -665,7 +674,7 @@ static __init void wand_init_wifi(void) {
  * Bluetooth
  *                                                                          
  ****************************************************************************/
-
+#if 0
 static const struct imxuart_platform_data wand_bt_uart_data = {
 	.flags = IMXUART_HAVE_RTSCTS | IMXUART_SDMA,
 	.dma_req_tx = MX6Q_DMA_REQ_UART3_TX,
@@ -706,7 +715,7 @@ static __init void wand_init_bluetooth(void) {
 	gpio_request(WAND_BT_HOST_WAKE, "bt_host_wake");
 	gpio_direction_input(WAND_BT_WAKE);
 }
-
+#endif
 
 /****************************************************************************
  *                                                                          
@@ -723,15 +732,19 @@ static const struct anatop_thermal_platform_data wand_thermal = {
 /* ------------------------------------------------------------------------ */
 
 static void wand_suspend_enter(void) {
-	gpio_set_value(WAND_WL_WAKE, 0);
-	gpio_set_value(WAND_BT_WAKE, 0);
+	/*
+	 * @note
+	 * Debug pin can be intialized here to monitor how power modes work.
+	 * */
+	//gpio_set_value(WAND_WL_WAKE, 0);
+	//gpio_set_value(WAND_BT_WAKE, 0);
 }
 
 /* ------------------------------------------------------------------------ */
 
 static void wand_suspend_exit(void) {
-	gpio_set_value(WAND_WL_WAKE, 1);
-	gpio_set_value(WAND_BT_WAKE, 1);
+	//gpio_set_value(WAND_WL_WAKE, 1);
+	//gpio_set_value(WAND_BT_WAKE, 1);
 }
 
 /* ------------------------------------------------------------------------ */
@@ -939,7 +952,7 @@ static void __init wand_init_spi(void) {
  * Vivante GPU/VPU
  *                                                                          
  ****************************************************************************/
-
+#if 0
 static const __initconst struct imx_viv_gpu_data wand_gpu_data = {
 	.phys_baseaddr = 0,
 	.iobase_3d = GPU_3D_ARB_BASE_ADDR,
@@ -959,14 +972,14 @@ static __init void wand_init_gpu(void) {
         imx6q_add_vpu();
         imx6q_add_v4l2_output(0);
 }
-
+#endif
 
 /*****************************************************************************
  *                                                                            
  * PCI Express (not present on default baseboard, but is routed to connector)
  *                                                                            
  *****************************************************************************/
-
+#if 0
 static const struct imx_pcie_platform_data wand_pcie_data = {
 	.pcie_pwr_en	= -EINVAL,
 	.pcie_rst	= WAND_PCIE_NRST,
@@ -980,14 +993,14 @@ static void __init wand_init_pcie(void) {
 	IMX6_SETUP_PAD( EIM_D31__GPIO_3_31);
 	imx6q_add_pcie(&wand_pcie_data);
 }
-
+#endif
 
 /****************************************************************************
  *                                                                          
  * AHCI - SATA
  *                                                                          
  ****************************************************************************/
-
+#if 0
 static struct clk *wand_sata_clk;
 
 /* HW Initialization, if return 0, initialization is successful. */
@@ -1064,7 +1077,7 @@ static struct ahci_platform_data wand_sata_data = {
 static __init void wand_init_sata(void) {
         imx6q_add_ahci(0, &wand_sata_data);
 }
-
+#endif
 
 /*****************************************************************************
  *                                                                           
@@ -1094,6 +1107,7 @@ static struct sys_timer wand_timer = {
 /* ------------------------------------------------------------------------ */
 
 static void __init wand_reserve(void) {
+#if 0
 	phys_addr_t phys;
         
 	if (wand_gpu_pdata.reserved_mem_size) {
@@ -1101,6 +1115,7 @@ static void __init wand_reserve(void) {
 		memblock_remove(phys, wand_gpu_pdata.reserved_mem_size);
 		wand_gpu_pdata.reserved_mem_base = phys;
 	}
+#endif
 }
 
 /*****************************************************************************
@@ -1114,25 +1129,27 @@ static void __init wand_board_init(void) {
 	wand_init_uart();
 	wand_init_sd();
 	wand_init_i2c();
-	wand_init_audio();
-	wand_init_ethernet();
-	wand_init_usb();
-	wand_init_ipu();
-	wand_init_hdmi();
+	//wand_init_audio();
+	//wand_init_ethernet();
+	//wand_init_usb();
+	//wand_init_ipu();
+	//wand_init_hdmi();
 	/*
 	 * commented lcd due to gpios and spi3 is used
 	 * on the DISP0_DAT0 - DISP0_DAT9
 	 * */
 	//wand_init_lcd();
-	wand_init_wifi();
-	wand_init_bluetooth();
+	//wand_init_wifi();
+	//wand_init_bluetooth();
 	wand_init_pm();
 	wand_init_external_gpios();
 	wand_init_spi();
-	wand_init_gpu();
-	wand_init_pcie();
-        if (cpu_is_mx6q())
-                wand_init_sata();
+	//wand_init_gpu();
+	//wand_init_pcie();
+#if 0
+	if (cpu_is_mx6q())
+		wand_init_sata();
+#endif
 }
 
 /* ------------------------------------------------------------------------ */
