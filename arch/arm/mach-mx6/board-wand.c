@@ -149,6 +149,9 @@ static void wand_init_sd(void) {
 	IMX6_SETUP_PAD( SD3_DAT5__USDHC3_DAT5_50MHZ );
 	IMX6_SETUP_PAD( SD3_DAT6__USDHC3_DAT6_50MHZ );
 	IMX6_SETUP_PAD( SD3_DAT7__USDHC3_DAT7_50MHZ );
+
+	IMX6_SETUP_PAD( SD3_RST__USDHC3_RST );
+	IMX6_SETUP_PAD( GPIO_18__USDHC3_VSELECT );
 	/* card detect for sd3.*/
 	//IMX6_SETUP_PAD( EIM_DA9__GPIO_3_9 );
 #if 1
@@ -824,17 +827,48 @@ static __init void wand_init_pm(void) {
 static __init void wand_init_external_gpios(void) {
 	IMX6_SETUP_PAD( EIM_DA11__GPIO_3_11 );
 
-	/*
-	 * EIM_D27, EIM_D28 are used for uart2 so they must be disabled as gpio
-	 * */
-	//IMX6_SETUP_PAD( EIM_D27__GPIO_3_27 );
+	/* STIM300 TOV, ExtTrig, Reset.*/
 	IMX6_SETUP_PAD( EIM_BCLK__GPIO_6_31 );
-	IMX6_SETUP_PAD( ENET_RX_ER__GPIO_1_24 );
-	IMX6_SETUP_PAD( SD3_RST__GPIO_7_8 );
-	//IMX6_SETUP_PAD( EIM_D26__GPIO_3_26 );
-	IMX6_SETUP_PAD( EIM_DA8__GPIO_3_8 );
 	IMX6_SETUP_PAD( GPIO_19__GPIO_4_5 );
+	IMX6_SETUP_PAD( DISP0_DAT9__GPIO_4_30 );
 
+	/* ADIS DIO1, DIO2, DIO3.*/
+	IMX6_SETUP_PAD( DISP0_DAT5__GPIO_4_26 );
+	IMX6_SETUP_PAD( DISP0_DAT6__GPIO_4_27 );
+	IMX6_SETUP_PAD( DISP0_DAT7__GPIO_4_28 );
+
+	/* PPS1, PPS2.*/
+	IMX6_SETUP_PAD( DISP0_DAT12__GPIO_5_6 );
+	IMX6_SETUP_PAD( DISP0_DAT13__GPIO_5_7 );
+
+	/* OUT_IO_1, OUT_IO_2, OUT_IO_3, OUT_IO_4, OUT_RST.*/
+	IMX6_SETUP_PAD( DISP0_DAT14__GPIO_5_8 );
+	IMX6_SETUP_PAD( DISP0_DAT15__GPIO_5_9 );
+	IMX6_SETUP_PAD( DISP0_DAT16__GPIO_5_10 );
+	IMX6_SETUP_PAD( DISP0_DAT17__GPIO_5_11 );
+	IMX6_SETUP_PAD( DISP0_DAT18__GPIO_5_12 );
+
+	/* UART5_CTS_B. rs485 direction control.*/
+	IMX6_SETUP_PAD( CSI0_DAT19__GPIO_6_5 );
+
+	/* mpu9250 int, fsync*/
+	IMX6_SETUP_PAD( EIM_A25__GPIO_5_2 );
+	IMX6_SETUP_PAD( EIM_D23__GPIO_3_23 );
+
+	/* gpio_res_1 - gpio_res_10.*/
+	IMX6_SETUP_PAD( EIM_D26__GPIO_3_26 );
+	IMX6_SETUP_PAD( EIM_D27__GPIO_3_27 );
+	IMX6_SETUP_PAD( EIM_D30__GPIO_3_30 );
+	IMX6_SETUP_PAD( EIM_D31__GPIO_3_31 );
+
+	IMX6_SETUP_PAD( GPIO_0__GPIO_1_0 );
+	IMX6_SETUP_PAD( GPIO_2__GPIO_1_2 );
+	IMX6_SETUP_PAD( GPIO_3__GPIO_1_3 );
+	IMX6_SETUP_PAD( GPIO_4__GPIO_1_4 );
+	IMX6_SETUP_PAD( GPIO_16__GPIO_7_11 );
+	IMX6_SETUP_PAD( GPIO_17__GPIO_7_12 );
+
+#if 0
 	gpio_request(IMX_GPIO_NR(3, 11), "external_gpio_0");
 	gpio_export(IMX_GPIO_NR(3, 11), true);
 	//gpio_request(IMX_GPIO_NR(3, 27), "external_gpio_1");
@@ -851,17 +885,8 @@ static __init void wand_init_external_gpios(void) {
 	gpio_export(IMX_GPIO_NR(3, 8), true);
 	gpio_request(IMX_GPIO_NR(4, 5), "external_gpio_7");
 	gpio_export(IMX_GPIO_NR(4, 5), true);
+#endif
 
-	//init extra gpios
-	IMX6_SETUP_PAD( DISP0_DAT6__GPIO_4_27 );
-	IMX6_SETUP_PAD( DISP0_DAT7__GPIO_4_28 );
-	IMX6_SETUP_PAD( DISP0_DAT8__GPIO_4_29 );
-	IMX6_SETUP_PAD( DISP0_DAT9__GPIO_4_30 );
-	IMX6_SETUP_PAD( DISP0_DAT10__GPIO_4_31 );
-	IMX6_SETUP_PAD( DISP0_DAT11__GPIO_5_5 );
-	IMX6_SETUP_PAD( DISP0_DAT12__GPIO_5_6 );
-	IMX6_SETUP_PAD( DISP0_DAT13__GPIO_5_7 );
-	IMX6_SETUP_PAD( DISP0_DAT14__GPIO_5_8 );
 }
 
 
