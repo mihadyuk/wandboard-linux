@@ -44,28 +44,31 @@
 #include "devices-imx6q.h"
 #include "usb.h"
 
-#define WAND_BT_ON		IMX_GPIO_NR(3, 13)
-#define WAND_BT_WAKE		IMX_GPIO_NR(3, 14)
-#define WAND_BT_HOST_WAKE	IMX_GPIO_NR(3, 15)
+//#define WAND_BT_ON		IMX_GPIO_NR(3, 13)
+//#define WAND_BT_WAKE		IMX_GPIO_NR(3, 14)
+//#define WAND_BT_HOST_WAKE	IMX_GPIO_NR(3, 15)
 
-#define WAND_PCIE_NRST		IMX_GPIO_NR(3, 31)
+//#define WAND_PCIE_NRST		IMX_GPIO_NR(3, 31)
 
-#define WAND_RGMII_INT		IMX_GPIO_NR(1, 28)
-#define WAND_RGMII_RST		IMX_GPIO_NR(3, 29)
+//#define WAND_RGMII_INT		IMX_GPIO_NR(1, 28)
+//#define WAND_RGMII_RST		IMX_GPIO_NR(3, 29)
 
-#define WAND_SD1_CD		IMX_GPIO_NR(1, 2)
-#define WAND_SD3_CD		IMX_GPIO_NR(3, 9)
-#define WAND_SD3_WP		IMX_GPIO_NR(1, 10)
+#define WAND_SD1_CD		IMX_GPIO_NR(1, 1)
+#define WAND_SD1_WP		IMX_GPIO_NR(1, 9)
+//#define WAND_SD1_WP		IMX_GPIO_NR(1, 10)
 
-#define WAND_USB_OTG_OC		IMX_GPIO_NR(1, 9)
-#define WAND_USB_OTG_PWR	IMX_GPIO_NR(3, 22)
-#define WAND_USB_H1_OC		IMX_GPIO_NR(3, 30)
+//#define WAND_SD3_CD		IMX_GPIO_NR(3, 9)
+//#define WAND_SD3_WP		IMX_GPIO_NR(1, 10)
 
-#define WAND_WL_REF_ON		IMX_GPIO_NR(2, 29)
-#define WAND_WL_RST_N		IMX_GPIO_NR(5, 2)
-#define WAND_WL_REG_ON		IMX_GPIO_NR(1, 26)
-#define WAND_WL_HOST_WAKE	IMX_GPIO_NR(1, 29)
-#define WAND_WL_WAKE		IMX_GPIO_NR(1, 30)
+//#define WAND_USB_OTG_OC		IMX_GPIO_NR(1, 9)
+//#define WAND_USB_OTG_PWR	IMX_GPIO_NR(3, 22)
+//#define WAND_USB_H1_OC		IMX_GPIO_NR(3, 30)
+
+//#define WAND_WL_REF_ON		IMX_GPIO_NR(2, 29)
+//#define WAND_WL_RST_N		IMX_GPIO_NR(5, 2)
+//#define WAND_WL_REG_ON		IMX_GPIO_NR(1, 26)
+//#define WAND_WL_HOST_WAKE	IMX_GPIO_NR(1, 29)
+//#define WAND_WL_WAKE		IMX_GPIO_NR(1, 30)
 
 /* Syntactic sugar for pad configuration */
 #define IMX6_SETUP_PAD(p) \
@@ -91,35 +94,26 @@ static __init void wand_init_dma(void) {
  *                                                                          
  * SD init
  *
- * SD1 is routed to EDM connector (external SD on wand baseboard)
- * SD2 is WiFi
- * SD3 is boot SD on the module
+ * SD1 - external microsd
+ * SD3 - internal eMMC
  *                                                                          
  ****************************************************************************/
 
-static const struct esdhc_platform_data wand_sd_data[3] = {
+static const struct esdhc_platform_data wand_sd_data[2] = {
 	{
-		.cd_gpio		= WAND_SD1_CD,
-		.wp_gpio		=-EINVAL,
+		.cd_gpio				= WAND_SD1_CD,
+		.wp_gpio				= WAND_SD1_WP,
 		.keep_power_at_suspend	= 1,
-	        .support_8bit		= 0,
-		.delay_line		= 0,
-                .cd_type                = ESDHC_CD_CONTROLLER,
-	}, {
-		.cd_gpio		=-EINVAL,
-		.wp_gpio		=-EINVAL,
+	    .support_8bit			= 0,
+		.delay_line				= 0,
+        .cd_type                = ESDHC_CD_CONTROLLER,
+	},  {
+		.cd_gpio				= -EINVAL,
+		.wp_gpio				= -EINVAL,
 		.keep_power_at_suspend	= 1,
-		.support_8bit		= 0,
-		.delay_line		= 0,
-                .always_present		= 1,
-                .cd_type                = ESDHC_CD_PERMANENT,
-	}, {
-		.cd_gpio		= WAND_SD3_CD,
-		.wp_gpio		= WAND_SD3_WP,
-		.keep_power_at_suspend	= 1,
-		.support_8bit		= 0,
-		.delay_line		= 0,
-                .cd_type                = ESDHC_CD_CONTROLLER,
+		.support_8bit		    = 1,
+		.delay_line		        = 0,
+        .cd_type                = ESDHC_CD_PERMANENT,
 	}
 };
 
@@ -134,13 +128,16 @@ static void wand_init_sd(void) {
 	IMX6_SETUP_PAD( SD1_DAT1__USDHC1_DAT1_50MHZ_40OHM );
 	IMX6_SETUP_PAD( SD1_DAT2__USDHC1_DAT2_50MHZ_40OHM );
 	IMX6_SETUP_PAD( SD1_DAT3__USDHC1_DAT3_50MHZ_40OHM );
+	/* Card Detect and write protect for SD1.*/
+	IMX6_SETUP_PAD( GPIO_1__GPIO_1_1 );
+	IMX6_SETUP_PAD( GPIO_9__GPIO_1_9 );
 
-	IMX6_SETUP_PAD( SD2_CLK__USDHC2_CLK );
-	IMX6_SETUP_PAD( SD2_CMD__USDHC2_CMD );
-	IMX6_SETUP_PAD( SD2_DAT0__USDHC2_DAT0 );
-	IMX6_SETUP_PAD( SD2_DAT1__USDHC2_DAT1 );
-	IMX6_SETUP_PAD( SD2_DAT2__USDHC2_DAT2 );
-	IMX6_SETUP_PAD( SD2_DAT3__USDHC2_DAT3 );
+//	IMX6_SETUP_PAD( SD2_CLK__USDHC2_CLK );
+//	IMX6_SETUP_PAD( SD2_CMD__USDHC2_CMD );
+//	IMX6_SETUP_PAD( SD2_DAT0__USDHC2_DAT0 );
+//	IMX6_SETUP_PAD( SD2_DAT1__USDHC2_DAT1 );
+//	IMX6_SETUP_PAD( SD2_DAT2__USDHC2_DAT2 );
+//	IMX6_SETUP_PAD( SD2_DAT3__USDHC2_DAT3 );
 
 	IMX6_SETUP_PAD( SD3_CLK__USDHC3_CLK_50MHZ );
 	IMX6_SETUP_PAD( SD3_CMD__USDHC3_CMD_50MHZ );
@@ -148,15 +145,24 @@ static void wand_init_sd(void) {
 	IMX6_SETUP_PAD( SD3_DAT1__USDHC3_DAT1_50MHZ );
 	IMX6_SETUP_PAD( SD3_DAT2__USDHC3_DAT2_50MHZ );
 	IMX6_SETUP_PAD( SD3_DAT3__USDHC3_DAT3_50MHZ );
-
-	/* Card Detect for SD1 & SD3, respectively */
-	IMX6_SETUP_PAD( GPIO_2__GPIO_1_2 ); 
-	IMX6_SETUP_PAD( EIM_DA9__GPIO_3_9 );
-
-	/* Add mmc devices in reverse order, so mmc0 always is boot sd (SD3) */
-	for (i=2; i>=0; i--) {
-                imx6q_add_sdhci_usdhc_imx(i, &wand_sd_data[i]);
+	IMX6_SETUP_PAD( SD3_DAT4__USDHC3_DAT4_50MHZ );
+	IMX6_SETUP_PAD( SD3_DAT5__USDHC3_DAT5_50MHZ );
+	IMX6_SETUP_PAD( SD3_DAT6__USDHC3_DAT6_50MHZ );
+	IMX6_SETUP_PAD( SD3_DAT7__USDHC3_DAT7_50MHZ );
+	/* card detect for sd3.*/
+	//IMX6_SETUP_PAD( EIM_DA9__GPIO_3_9 );
+#if 1
+	/* direct init order. It is for booting from microsd.*/
+	for (i = 0; i < 2; i++) {
+		imx6q_add_sdhci_usdhc_imx(i, &wand_sd_data[i]);
 	}
+#else
+	/* reverse init order. It is for booting from onboard eMMC.*/
+	/* Add mmc devices in reverse order, so mmc0 always is boot sd (SD3) */
+	for (i = 1; i >= 0; i--) {
+		imx6q_add_sdhci_usdhc_imx(i, &wand_sd_data[i]);
+	}
+#endif
 }
 
 
