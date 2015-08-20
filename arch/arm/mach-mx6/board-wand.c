@@ -199,22 +199,43 @@ static void __init wand_init_i2c(void) {
 
 /****************************************************************************
  *                                                                          
- * Initialize debug console (UART1)
+ * Initialize UARTs
  *                                                                          
  ****************************************************************************/
  
 static __init void wand_init_uart(void) {
-        IMX6_SETUP_PAD( CSI0_DAT10__UART1_TXD );
-        IMX6_SETUP_PAD( CSI0_DAT11__UART1_RXD );
-        IMX6_SETUP_PAD( EIM_D19__UART1_CTS );
-        IMX6_SETUP_PAD( EIM_D20__UART1_RTS );
 
+	/* UART1 with cts rts support.*/
+	IMX6_SETUP_PAD( CSI0_DAT10__UART1_TXD );
+	IMX6_SETUP_PAD( CSI0_DAT11__UART1_RXD );
+	IMX6_SETUP_PAD( EIM_D19__UART1_CTS );
+	IMX6_SETUP_PAD( EIM_D20__UART1_RTS );
 	imx6q_add_imx_uart(0, NULL);
 
-	/* enable uart2 on EIM_D27, EIM_D26*/
-	IMX6_SETUP_PAD(EIM_D27__UART2_TXD);
-	IMX6_SETUP_PAD(EIM_D26__UART2_RXD);
+	/* UART2.*/
+	IMX6_SETUP_PAD(GPIO_8__UART2_TXD);
+	IMX6_SETUP_PAD(GPIO_7__UART2_RXD);
 	imx6q_add_imx_uart(1, NULL);
+
+	/* UART3.*/
+	IMX6_SETUP_PAD(EIM_D24__UART3_TXD);
+	IMX6_SETUP_PAD(EIM_D25__UART3_RXD);
+	imx6q_add_imx_uart(2, NULL);
+
+	/* UART4.*/
+	IMX6_SETUP_PAD(CSI0_DAT12__UART4_TXD);
+	IMX6_SETUP_PAD(CSI0_DAT13__UART4_RXD);
+	imx6q_add_imx_uart(3, NULL);
+
+	/* UART5.
+	 * @todo
+	 * - init UART5_CTS_B for hardware rs485 control.
+	 * At first it is needed to find out how rs485 works.
+	 * Perhaps direction control will be implemented via gpio.
+	 * */
+	IMX6_SETUP_PAD(CSI0_DAT14__UART5_TXD);
+	IMX6_SETUP_PAD(CSI0_DAT15__UART5_RXD);
+	imx6q_add_imx_uart(4, NULL);
 }
 
 
