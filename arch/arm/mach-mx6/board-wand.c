@@ -120,7 +120,7 @@ static const struct esdhc_platform_data wand_sd_data[2] = {
 /* ------------------------------------------------------------------------ */
 
 static void wand_init_sd(void) {
-	int i;
+	//int i;
 
 	IMX6_SETUP_PAD( SD1_CLK__USDHC1_CLK_50MHZ_40OHM );
 	IMX6_SETUP_PAD( SD1_CMD__USDHC1_CMD_50MHZ_40OHM );
@@ -153,15 +153,13 @@ static void wand_init_sd(void) {
 	//IMX6_SETUP_PAD( EIM_DA9__GPIO_3_9 );
 #if 1
 	/* direct init order. It is for booting from microsd.*/
-	for (i = 0; i < 2; i++) {
-		imx6q_add_sdhci_usdhc_imx(i, &wand_sd_data[i]);
-	}
+	imx6q_add_sdhci_usdhc_imx(0, &wand_sd_data[0]);
+	imx6q_add_sdhci_usdhc_imx(2, &wand_sd_data[1]);
+
 #else
 	/* reverse init order. It is for booting from onboard eMMC.*/
-	/* Add mmc devices in reverse order, so mmc0 always is boot sd (SD3) */
-	for (i = 1; i >= 0; i--) {
-		imx6q_add_sdhci_usdhc_imx(i, &wand_sd_data[i]);
-	}
+	imx6q_add_sdhci_usdhc_imx(0, &wand_sd_data[1]);
+	imx6q_add_sdhci_usdhc_imx(2, &wand_sd_data[0]);
 #endif
 }
 
