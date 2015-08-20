@@ -892,38 +892,35 @@ static __init void wand_init_external_gpios(void) {
 
 /****************************************************************************
  *                                                                          
- * SPI - while not used on the Wandboard, the pins are routed out
+ * SPI1, SPI3, SPI4,
  *                                                                          
  ****************************************************************************/
 
-static const int wand_spi1_chipselect[] = { IMX_GPIO_NR(2, 30), MXC_SPI_CS(1) };
-
-/* platform device */
+/* spi1 */
+static const int wand_spi1_chipselect[] = { MXC_SPI_CS(0) };
 static const struct spi_imx_master wand_spi1_data = {
 	.chipselect     = (int *)wand_spi1_chipselect,
 	.num_chipselect = ARRAY_SIZE(wand_spi1_chipselect),
 };
 
-/* ------------------------------------------------------------------------ */
 
-static const int wand_spi2_chipselect[] = { IMX_GPIO_NR(2, 26), IMX_GPIO_NR(2, 27) };
-
-static const struct spi_imx_master wand_spi2_data = {
-	.chipselect     = (int *)wand_spi2_chipselect,
-	.num_chipselect = ARRAY_SIZE(wand_spi2_chipselect),
-};
-
-/* spi3*/
+/* spi3 */
 static const int wand_spi3_chipselect[] = { MXC_SPI_CS(0),
-											MXC_SPI_CS(1),
-											IMX_GPIO_NR(4, 26)};
-
+											MXC_SPI_CS(1)
+										  };
 static const struct spi_imx_master wand_spi3_data = {
 	.chipselect     = (int *)wand_spi3_chipselect,
 	.num_chipselect = ARRAY_SIZE(wand_spi3_chipselect),
 };
 
-static const struct spi_board_info spidev_cfg[] /*__initdata*/ = {
+/* spi4 */
+static const int wand_spi4_chipselect[] = { MXC_SPI_CS(0) };
+static const struct spi_imx_master wand_spi4_data = {
+	.chipselect     = (int *)wand_spi4_chipselect,
+	.num_chipselect = ARRAY_SIZE(wand_spi4_chipselect),
+};
+
+static const struct spi_board_info spidev_cfg[] __initdata = {
  {
 	.modalias = "spidev",
 	.max_speed_hz = 20000000UL,
@@ -934,43 +931,37 @@ static const struct spi_board_info spidev_cfg[] /*__initdata*/ = {
  {
  	.modalias = "spidev",
  	.max_speed_hz = 20000000UL,
- 	.bus_num = 0,
- 	.chip_select = 1,
+ 	.bus_num = 2,
+ 	.chip_select = 0,
  	.mode = SPI_MODE_0,
  },
  {
     .modalias = "spidev",
     .max_speed_hz = 20000000UL,
     .bus_num = 2,
-    .chip_select = 0,
+    .chip_select = 1,
     .mode = SPI_MODE_0,
  },
  {
     .modalias = "spidev",
     .max_speed_hz = 20000000UL,
-    .bus_num = 2,
-	.chip_select = 1,
+    .bus_num = 3,
+	.chip_select = 0,
 	.mode = SPI_MODE_0,
  },
- {
-    .modalias = "spidev",
-    .max_speed_hz = 20000000UL,
-    .bus_num = 2,
- 	.chip_select = 2,
- 	.mode = SPI_MODE_0,
- },
-
 };
 
 /* ------------------------------------------------------------------------ */
 
 static void __init wand_init_spi(void) {
-	IMX6_SETUP_PAD( EIM_D16__ECSPI1_SCLK );
-	IMX6_SETUP_PAD( EIM_D17__ECSPI1_MISO );
-	IMX6_SETUP_PAD( EIM_D18__ECSPI1_MOSI );
-	IMX6_SETUP_PAD( EIM_EB2__GPIO_2_30 );
-	IMX6_SETUP_PAD( KEY_COL2__ECSPI1_SS1 );
+	/* spi1*/
+	IMX6_SETUP_PAD( DISP0_DAT20__ECSPI1_SCLK );
+	IMX6_SETUP_PAD( DISP0_DAT22__ECSPI1_MISO );
+	IMX6_SETUP_PAD( DISP0_DAT21__ECSPI1_MOSI );
+	IMX6_SETUP_PAD( DISP0_DAT23__ECSPI1_SS0 );
+	imx6q_add_ecspi(0, &wand_spi1_data);
 
+#if 0
 	IMX6_SETUP_PAD( EIM_CS0__ECSPI2_SCLK );
 	IMX6_SETUP_PAD( EIM_CS1__ECSPI2_MOSI );
 	IMX6_SETUP_PAD( EIM_OE__ECSPI2_MISO );
@@ -978,6 +969,7 @@ static void __init wand_init_spi(void) {
    there can be issues using the dedicated mux modes for cs.*/
 	IMX6_SETUP_PAD( EIM_RW__GPIO_2_26 );
 	IMX6_SETUP_PAD( EIM_LBA__GPIO_2_27 );
+#endif
 
 	/*spi3 */
 	IMX6_SETUP_PAD( DISP0_DAT0__ECSPI3_SCLK );
@@ -985,11 +977,14 @@ static void __init wand_init_spi(void) {
 	IMX6_SETUP_PAD( DISP0_DAT2__ECSPI3_MISO );
 	IMX6_SETUP_PAD( DISP0_DAT3__ECSPI3_SS0 );
 	IMX6_SETUP_PAD( DISP0_DAT4__ECSPI3_SS1 );
-	IMX6_SETUP_PAD( DISP0_DAT5__GPIO_4_26 );
-
-	imx6q_add_ecspi(0, &wand_spi1_data);
-	imx6q_add_ecspi(1, &wand_spi2_data);
 	imx6q_add_ecspi(2, &wand_spi3_data);
+
+	/*spi4 */
+	IMX6_SETUP_PAD( EIM_D21__ECSPI4_SCLK );
+	IMX6_SETUP_PAD( EIM_D28__ECSPI4_MOSI );
+	IMX6_SETUP_PAD( EIM_D22__ECSPI4_MISO );
+	IMX6_SETUP_PAD( EIM_D29__ECSPI4_SS0 );
+	imx6q_add_ecspi(3, &wand_spi4_data);
 
 	/*register spidev.*/
 	spi_register_board_info(spidev_cfg, ARRAY_SIZE(spidev_cfg));
