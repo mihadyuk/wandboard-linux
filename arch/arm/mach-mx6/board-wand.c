@@ -175,26 +175,25 @@ static void wand_init_sd(void) {
 static struct imxi2c_platform_data wand_i2c_data[] = {
 	{ .bitrate	= 400000, },
 	{ .bitrate	= 400000, },
-	{ .bitrate	= 400000, },
 };
 
 /* ------------------------------------------------------------------------ */
 
 static void __init wand_init_i2c(void) {
-        int i;
-        
-        IMX6_SETUP_PAD( EIM_D21__I2C1_SCL );
-	IMX6_SETUP_PAD( EIM_D28__I2C1_SDA );
+    int i;
+
+    IMX6_SETUP_PAD( CSI0_DAT9__I2C1_SCL );
+	IMX6_SETUP_PAD( CSI0_DAT8__I2C1_SDA );
 
 	IMX6_SETUP_PAD( KEY_COL3__I2C2_SCL );
 	IMX6_SETUP_PAD( KEY_ROW3__I2C2_SDA );
 
-	IMX6_SETUP_PAD( GPIO_5__I2C3_SCL );
-	IMX6_SETUP_PAD( GPIO_16__I2C3_SDA );
+	//IMX6_SETUP_PAD( GPIO_5__I2C3_SCL );
+	//IMX6_SETUP_PAD( GPIO_16__I2C3_SDA );
         
-	for (i=0; i<3; i++) {
+	for (i = 0; i < ARRAY_SIZE(wand_i2c_data); i++) {
 		imx6q_add_imx_i2c(i, &wand_i2c_data[i]);
-        }
+    }
 }
 
 
