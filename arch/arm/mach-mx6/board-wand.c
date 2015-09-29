@@ -202,7 +202,7 @@ static const struct imxuart_platform_data uart0 = {
 		.gpio_rs485_txen = -1,
 };
 static const struct imxuart_platform_data uart1 = {
-		.gpio_rs485_txen = -1,
+		.gpio_rs485_txen = IMX_GPIO_NR(1, 24),
 		.gpio_rs485_name = "gpio_rs485",
 };
 
@@ -812,8 +812,11 @@ static __init void wand_init_external_gpios(void) {
 	//gpio_export(IMX_GPIO_NR(3, 27), true);
 	gpio_request(IMX_GPIO_NR(6, 31), "external_gpio_2");
 	gpio_export(IMX_GPIO_NR(6, 31), true);
-	gpio_request(IMX_GPIO_NR(1, 24), "external_gpio_3");
-	gpio_export(IMX_GPIO_NR(1, 24), true);
+
+	/* GPIO1_IO24 is used for rs485 control.*/
+	//gpio_request(IMX_GPIO_NR(1, 24), "external_gpio_3");
+	//gpio_export(IMX_GPIO_NR(1, 24), true);
+
 	gpio_request(IMX_GPIO_NR(7,  8), "external_gpio_4");
 	gpio_export(IMX_GPIO_NR(7,  8), true);
 	//gpio_request(IMX_GPIO_NR(3, 26), "external_gpio_5");
