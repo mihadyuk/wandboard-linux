@@ -197,19 +197,27 @@ static void __init wand_init_i2c(void) {
  * Initialize debug console (UART1)
  *                                                                          
  ****************************************************************************/
- 
+
+static const struct imxuart_platform_data uart0 = {
+		.gpio_rs485_txen = -1,
+};
+static const struct imxuart_platform_data uart1 = {
+		.gpio_rs485_txen = -1,
+		.gpio_rs485_name = "gpio_rs485",
+};
+
 static __init void wand_init_uart(void) {
         IMX6_SETUP_PAD( CSI0_DAT10__UART1_TXD );
         IMX6_SETUP_PAD( CSI0_DAT11__UART1_RXD );
         IMX6_SETUP_PAD( EIM_D19__UART1_CTS );
         IMX6_SETUP_PAD( EIM_D20__UART1_RTS );
 
-	imx6q_add_imx_uart(0, NULL);
+	imx6q_add_imx_uart(0, &uart0);
 
 	/* enable uart2 on EIM_D27, EIM_D26*/
 	IMX6_SETUP_PAD(EIM_D27__UART2_TXD);
 	IMX6_SETUP_PAD(EIM_D26__UART2_RXD);
-	imx6q_add_imx_uart(1, NULL);
+	imx6q_add_imx_uart(1, &uart1);
 }
 
 
