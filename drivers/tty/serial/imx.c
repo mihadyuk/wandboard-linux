@@ -346,6 +346,7 @@ static void imx_stop_tx(struct uart_port *port)
 		}
 		if (sport->gpio_rs485_txen >= 0) {
 			gpio_set_value(sport->gpio_rs485_txen, 0);
+			printk(KERN_WARNING "gpio reset");
 		}
 		return;
 	}
@@ -354,6 +355,7 @@ static void imx_stop_tx(struct uart_port *port)
 	writel(temp & ~UCR1_TXMPTYEN, sport->port.membase + UCR1);
 	if (sport->gpio_rs485_txen >= 0) {
 		gpio_set_value(sport->gpio_rs485_txen, 0);
+		printk(KERN_WARNING "gpio reset");
 	}
 }
 
@@ -489,6 +491,7 @@ static void imx_start_tx(struct uart_port *port)
 
 	if (sport->gpio_rs485_txen >= 0) {
 		gpio_set_value(sport->gpio_rs485_txen, 1);
+		printk(KERN_WARNING "gpio set");
 	}
 	if (USE_IRDA(sport)) {
 		/* half duplex in IrDA mode; have to disable receive mode */
@@ -1766,6 +1769,7 @@ static int serial_imx_probe(struct platform_device *pdev)
 	struct resource *res;
 	int retval;
 
+	pdata = pdev->dev.platform_data;
 	sport = kzalloc(sizeof(*sport), GFP_KERNEL);
 	if (!sport)
 		return -ENOMEM;
@@ -1781,24 +1785,35 @@ static int serial_imx_probe(struct platform_device *pdev)
 		ret = -ENOMEM;
 		goto free;
 	}
-
+#if 1
 	/* init rs485 direction pin.*/
 	sport->gpio_rs485_txen = -1;
 	sport->gpio_rs485_name = NULL;
-	if (pdata->gpio_rs485_txen >= 0) {
-	    retval = gpio_request_one(pdata->gpio_rs485_txen,
-								  GPIOF_DIR_OUT | GPIOF_INIT_LOW,
-								  pdata->gpio_rs485_name);
-		if (retval >= 0) {
-			sport->gpio_rs485_name = pdata->gpio_rs485_name;
-			sport->gpio_rs485_txen = pdata->gpio_rs485_txen;
-		}
-		else {
-			printk(KERN_WARNING \
-				 "Unable to init rs485 gpio. We won't use dir control.\n");
+	if (pdata) {
+		if (pdata->gpio_rs485_txen >= 0) {
+#if 1
+			retval = gpio_request_one(pdata->gpio_rs485_txen,
+									  GPIOF_DIR_OUT | GPIOF_INIT_LOW,
+									  pdata->gpio_rs485_name);
+			if (retval >= 0) {
+				sport->gpio_rs485_name = pdata->gpio_rs485_name;
+				sport->gpio_rs485_txen = pdata->gpio_rs485_txen;
+				printk(KERN_WARNING "init gpio");
+			}
+			else {
+				printk(KERN_WARNING \
+					 "Unable to init rs485 gpio. We won't use dir control.\n");
+			}
+#endif
+			/*sport->gpio_rs485_name = pdata->gpio_rs485_name;*/
+			/*sport->gpio_rs485_txen = pdata->gpio_rs485_txen;*/
+			//printk(KERN_WARNING "init gpio");
 		}
 	}
-
+	else {
+		printk(KERN_WARNING "pdata is null pointer");
+	}
+#endif
 	sport->port.dev = &pdev->dev;
 	sport->port.mapbase = res->start;
 	sport->port.membase = base;
@@ -1880,7 +1895,7 @@ static int serial_imx_remove(struct platform_device *pdev)
 	/* free used gpio for rs485 direction control.*/
 	if (pdata->gpio_rs485_txen >= 0) {
 		gpio_free(pdata->gpio_rs485_txen);
-		/*pdata->gpio_rs485_txen = -1;*/
+		printk(KERN_WARNING "free gpio");
 	}
 
 	platform_set_drvdata(pdev, NULL);
