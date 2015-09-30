@@ -1136,7 +1136,7 @@ static void __init wand_board_init(void) {
 	 * */
 	//wand_init_lcd();
 	wand_init_wifi();
-	wand_init_bluetooth();
+	//wand_init_bluetooth();
 	wand_init_pm();
 	wand_init_external_gpios();
 	wand_init_spi();
