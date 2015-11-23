@@ -53,8 +53,8 @@
 //#define WAND_RGMII_INT		IMX_GPIO_NR(1, 28)
 //#define WAND_RGMII_RST		IMX_GPIO_NR(3, 29)
 
-#define WAND_SD1_CD		IMX_GPIO_NR(1, 1)
-#define WAND_SD1_WP		IMX_GPIO_NR(1, 9)
+//#define WAND_SD1_CD		IMX_GPIO_NR(1, 1)
+//#define WAND_SD1_WP		IMX_GPIO_NR(1, 9)
 //#define WAND_SD1_WP		IMX_GPIO_NR(1, 10)
 
 //#define WAND_SD3_CD		IMX_GPIO_NR(3, 9)
@@ -101,12 +101,12 @@ static __init void wand_init_dma(void) {
 
 static const struct esdhc_platform_data wand_sd_data[2] = {
 	{
-		.cd_gpio				= WAND_SD1_CD,
-		.wp_gpio				= WAND_SD1_WP,
+		.cd_gpio				= -EINVAL,
+		.wp_gpio				= -EINVAL,
 		.keep_power_at_suspend	= 1,
 	    .support_8bit			= 0,
 		.delay_line				= 0,
-        .cd_type                = ESDHC_CD_CONTROLLER,
+        .cd_type                = ESDHC_CD_PERMANENT,
 	},  {
 		.cd_gpio				= -EINVAL,
 		.wp_gpio				= -EINVAL,
@@ -129,8 +129,8 @@ static void wand_init_sd(void) {
 	IMX6_SETUP_PAD( SD1_DAT2__USDHC1_DAT2_50MHZ_40OHM );
 	IMX6_SETUP_PAD( SD1_DAT3__USDHC1_DAT3_50MHZ_40OHM );
 	/* Card Detect and write protect for SD1.*/
-	IMX6_SETUP_PAD( GPIO_1__GPIO_1_1 );
-	IMX6_SETUP_PAD( GPIO_9__GPIO_1_9 );
+	//IMX6_SETUP_PAD( GPIO_1__GPIO_1_1 );
+	//IMX6_SETUP_PAD( GPIO_9__GPIO_1_9 );
 
 //	IMX6_SETUP_PAD( SD2_CLK__USDHC2_CLK );
 //	IMX6_SETUP_PAD( SD2_CMD__USDHC2_CMD );
