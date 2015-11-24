@@ -1174,7 +1174,7 @@ static void __init wand_board_init(void) {
 	wand_init_uart();
 	wand_init_sd();
 	wand_init_i2c();
-	wand_init_audio();
+	//wand_init_audio();
 	//wand_init_ethernet();
 	//wand_init_usb();
 	wand_init_ipu();
@@ -1183,7 +1183,7 @@ static void __init wand_board_init(void) {
 	 * commented lcd due to gpios and spi3 is used
 	 * on the DISP0_DAT0 - DISP0_DAT9
 	 * */
-	wand_init_lcd();
+	//wand_init_lcd();
 	//wand_init_wifi();
 	//wand_init_bluetooth();
 	wand_init_pm();
