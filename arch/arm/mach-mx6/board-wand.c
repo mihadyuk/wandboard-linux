@@ -245,7 +245,7 @@ static __init void wand_init_uart(void) {
  * Initialize sound (SSI, ASRC, AUD3 channel and S/PDIF)
  *                                                                          
  ****************************************************************************/
-#if 0
+#if 1
 extern struct mxc_audio_platform_data wand_audio_channel_data;
 
 /* This function is called as a callback from the audio channel data struct */
@@ -330,11 +330,11 @@ static struct imx_asrc_platform_data wand_asrc_data = {
 /* ------------------------------------------------------------------------ */
 
 void __init wand_init_audio(void) {
-        IMX6_SETUP_PAD( CSI0_DAT4__AUDMUX_AUD3_TXC );
-        IMX6_SETUP_PAD( CSI0_DAT5__AUDMUX_AUD3_TXD );
-        IMX6_SETUP_PAD( CSI0_DAT6__AUDMUX_AUD3_TXFS );
-        IMX6_SETUP_PAD( CSI0_DAT7__AUDMUX_AUD3_RXD );
-        IMX6_SETUP_PAD( GPIO_0__CCM_CLKO );
+        //IMX6_SETUP_PAD( CSI0_DAT4__AUDMUX_AUD3_TXC );
+        //IMX6_SETUP_PAD( CSI0_DAT5__AUDMUX_AUD3_TXD );
+        //IMX6_SETUP_PAD( CSI0_DAT6__AUDMUX_AUD3_TXFS );
+        //IMX6_SETUP_PAD( CSI0_DAT7__AUDMUX_AUD3_RXD );
+        //IMX6_SETUP_PAD( GPIO_0__CCM_CLKO );
         
         /* Sample rate converter is added together with audio */
         wand_asrc_data.asrc_core_clk = clk_get(NULL, "asrc_clk");
@@ -344,7 +344,7 @@ void __init wand_init_audio(void) {
 	imx6q_add_imx_ssi(1, &wand_ssi_pdata);
 	/* Enable SPDIF */
 
-        IMX6_SETUP_PAD( ENET_RXD0__SPDIF_OUT1);
+        //IMX6_SETUP_PAD( ENET_RXD0__SPDIF_OUT1);
 
 	wand_spdif.spdif_core_clk = clk_get_sys("mxc_spdif.0", NULL);
 	clk_put(wand_spdif.spdif_core_clk);
@@ -474,7 +474,7 @@ static __init void wand_init_usb(void) {
  * IPU
  *                                                                          
  ****************************************************************************/
-#if 0
+#if 1
 static struct imx_ipuv3_platform_data wand_ipu_data[] = {
 	{
 		.rev		= 4,
@@ -492,7 +492,7 @@ static __init void wand_init_ipu(void) {
 }
 #endif
 
-#if 0
+#if 1
 /****************************************************************************
  *                                                                          
  * HDMI
@@ -558,7 +558,7 @@ static void wand_init_hdmi(void) {
  * LCD/LVDS/TTL
  *                                                                          
  ****************************************************************************/
-#if 0
+#if 1
 static struct fsl_mxc_lcd_platform_data wand_lcdif_data = {
 	.ipu_id = 0,
 	.disp_id = 0,
@@ -590,8 +590,9 @@ static struct ipuv3_fb_platform_data wand_lvds_fb[] = {
 
 /* ------------------------------------------------------------------------ */
 
-#if 0
+#if 1
 static void __init wand_init_lcd(void) {
+#if 0
 	/* TTL */
 	IMX6_SETUP_PAD( DI0_DISP_CLK__IPU1_DI0_DISP_CLK );
 	IMX6_SETUP_PAD( DI0_PIN2__IPU1_DI0_PIN2 );		/* HSync */
@@ -646,7 +647,7 @@ static void __init wand_init_lcd(void) {
 
 	gpio_request(IMX_GPIO_NR(2, 11), "disp0_vdden");
 	gpio_direction_output(IMX_GPIO_NR(2, 11), 1);
-
+#endif
 	imx6q_add_vdoa();
 
 	imx6q_add_ldb(&wand_ldb_data);
@@ -1173,16 +1174,16 @@ static void __init wand_board_init(void) {
 	wand_init_uart();
 	wand_init_sd();
 	wand_init_i2c();
-	//wand_init_audio();
+	wand_init_audio();
 	//wand_init_ethernet();
 	//wand_init_usb();
-	//wand_init_ipu();
-	//wand_init_hdmi();
+	wand_init_ipu();
+	wand_init_hdmi();
 	/*
 	 * commented lcd due to gpios and spi3 is used
 	 * on the DISP0_DAT0 - DISP0_DAT9
 	 * */
-	//wand_init_lcd();
+	wand_init_lcd();
 	//wand_init_wifi();
 	//wand_init_bluetooth();
 	wand_init_pm();

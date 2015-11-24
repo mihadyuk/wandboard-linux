@@ -82,7 +82,7 @@ static struct platform_device wandbase_sgtl5000_vddio_reg_devices = {
 };
 
 /* ------------------------------------------------------------------------ */
-#if 0
+#if 1
 static struct platform_device wandbase_audio_device = {
 	.name = "imx-sgtl5000",
 };
@@ -107,8 +107,8 @@ static __init int wandbase_init_sgtl5000(void) {
 	wandbase_sgtl5000_consumer_vdda.dev_name = wandbase_sgtl5000_dev_name;
 	wandbase_sgtl5000_consumer_vddio.dev_name = wandbase_sgtl5000_dev_name;
         
-        //wandbase_audio_device.dev.platform_data = &wand_audio_channel_data;
-        //platform_device_register(&wandbase_audio_device);
+        wandbase_audio_device.dev.platform_data = &wand_audio_channel_data;
+        platform_device_register(&wandbase_audio_device);
         
 	i2c_register_board_info(i2c_bus, &wandbase_sgtl5000_i2c_data, 1);
 	platform_device_register(&wandbase_sgtl5000_vdda_reg_devices);
