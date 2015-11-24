@@ -157,7 +157,7 @@ static void wand_init_sd(void) {
 #if 1
 	/* direct init order. It is for booting from microsd.*/
 	imx6q_add_sdhci_usdhc_imx(0, &wand_sd_data[0]);
-	imx6q_add_sdhci_usdhc_imx(2, &wand_sd_data[1]);
+	//imx6q_add_sdhci_usdhc_imx(2, &wand_sd_data[1]);
 
 #else
 	/* reverse init order. It is for booting from onboard eMMC.*/
