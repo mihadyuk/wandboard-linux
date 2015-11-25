@@ -469,6 +469,12 @@ static __init void wand_init_usb(void) {
 }
 #endif
 
+/*
+ * @todo
+ * Disabling IPU and HDMI causes hang on login prompt.
+ * Find out why the IPU and HDMI have an influence for that.
+ *
+ * */
 /****************************************************************************
  *                                                                          
  * IPU
