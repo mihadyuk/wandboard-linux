@@ -245,7 +245,7 @@ static __init void wand_init_uart(void) {
  * Initialize sound (SSI, ASRC, AUD3 channel and S/PDIF)
  *                                                                          
  ****************************************************************************/
-#if 1
+#if 0
 extern struct mxc_audio_platform_data wand_audio_channel_data;
 
 /* This function is called as a callback from the audio channel data struct */
@@ -558,7 +558,7 @@ static void wand_init_hdmi(void) {
  * LCD/LVDS/TTL
  *                                                                          
  ****************************************************************************/
-#if 1
+#if 0
 static struct fsl_mxc_lcd_platform_data wand_lcdif_data = {
 	.ipu_id = 0,
 	.disp_id = 0,
@@ -590,7 +590,7 @@ static struct ipuv3_fb_platform_data wand_lvds_fb[] = {
 
 /* ------------------------------------------------------------------------ */
 
-#if 1
+#if 0
 static void __init wand_init_lcd(void) {
 #if 0
 	/* TTL */

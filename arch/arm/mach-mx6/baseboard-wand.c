@@ -16,7 +16,7 @@
  * SGTL5000 Audio Codec
  *                                                                          
  ****************************************************************************/
-
+#if 0
 static struct regulator_consumer_supply wandbase_sgtl5000_consumer_vdda = {
 	.supply = "VDDA",
 	.dev_name = "0-000a", /* Modified load time */
@@ -82,11 +82,10 @@ static struct platform_device wandbase_sgtl5000_vddio_reg_devices = {
 };
 
 /* ------------------------------------------------------------------------ */
-#if 1
 static struct platform_device wandbase_audio_device = {
 	.name = "imx-sgtl5000",
 };
-#endif
+
 
 /* ------------------------------------------------------------------------ */
 
@@ -115,7 +114,7 @@ static __init int wandbase_init_sgtl5000(void) {
 	platform_device_register(&wandbase_sgtl5000_vddio_reg_devices);
         return 0;
 }
-
+#endif
 
 /****************************************************************************
  *                                                                          
@@ -124,7 +123,8 @@ static __init int wandbase_init_sgtl5000(void) {
  ****************************************************************************/
 
 static __init int wandbase_init(void) {
-	return wandbase_init_sgtl5000();
+	//return wandbase_init_sgtl5000();
+        return 0;
 }
 subsys_initcall(wandbase_init);
 
