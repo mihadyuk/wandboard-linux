@@ -155,7 +155,10 @@ static void wand_init_sd(void) {
 	/* card detect for sd3.*/
 	//IMX6_SETUP_PAD( EIM_DA9__GPIO_3_9 );
 #if 1
-	/* direct init order. It is for booting from microsd.*/
+	/* direct init order. It is for booting from microsd.
+	 * Also it works when booting is from onboard eMMC.
+	 * So else branch should be deleted.
+	 * */
 	imx6q_add_sdhci_usdhc_imx(0, &wand_sd_data[0]);
 	imx6q_add_sdhci_usdhc_imx(2, &wand_sd_data[1]);
 
