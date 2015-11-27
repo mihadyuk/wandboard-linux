@@ -440,32 +440,32 @@ static __init void wand_init_ethernet(void) {
  * USB
  *                                                                          
  ****************************************************************************/
-#if 0
-static void wand_usbotg_vbus(bool on) {
-        gpio_set_value_cansleep(WAND_USB_OTG_PWR, !on);
-}
+#if 1
+//static void wand_usbotg_vbus(bool on) {
+//        gpio_set_value_cansleep(WAND_USB_OTG_PWR, !on);
+//}
 
 /* ------------------------------------------------------------------------ */
 
 static __init void wand_init_usb(void) {
-        IMX6_SETUP_PAD( GPIO_9__GPIO_1_9 );
-        IMX6_SETUP_PAD( GPIO_1__USBOTG_ID );
-        IMX6_SETUP_PAD( EIM_D22__GPIO_3_22 );
-        IMX6_SETUP_PAD( EIM_D30__GPIO_3_30 );
+        //IMX6_SETUP_PAD( GPIO_9__GPIO_1_9 );
+        //IMX6_SETUP_PAD( GPIO_1__USBOTG_ID );
+        //IMX6_SETUP_PAD( EIM_D22__GPIO_3_22 );
+        //IMX6_SETUP_PAD( EIM_D30__GPIO_3_30 );
         
-        gpio_request(WAND_USB_OTG_OC, "otg oc");
-	gpio_direction_input(WAND_USB_OTG_OC);
+        //gpio_request(WAND_USB_OTG_OC, "otg oc");
+	//gpio_direction_input(WAND_USB_OTG_OC);
 
-        gpio_request(WAND_USB_OTG_PWR, "otg pwr");
-        gpio_direction_output(WAND_USB_OTG_PWR, 0);
+        //gpio_request(WAND_USB_OTG_PWR, "otg pwr");
+        //gpio_direction_output(WAND_USB_OTG_PWR, 0);
 
 	imx_otg_base = MX6_IO_ADDRESS(MX6Q_USB_OTG_BASE_ADDR);
-	mxc_iomux_set_gpr_register(1, 13, 1, 1);
+	//mxc_iomux_set_gpr_register(1, 13, 1, 1);
 
-	mx6_set_otghost_vbus_func(wand_usbotg_vbus);
+	//mx6_set_otghost_vbus_func(wand_usbotg_vbus);
 
-        gpio_request(WAND_USB_H1_OC, "usbh1 oc");
-	gpio_direction_input(WAND_USB_H1_OC);
+    //    gpio_request(WAND_USB_H1_OC, "usbh1 oc");
+	//gpio_direction_input(WAND_USB_H1_OC);
 }
 #endif
 
@@ -480,7 +480,7 @@ static __init void wand_init_usb(void) {
  * IPU
  *                                                                          
  ****************************************************************************/
-#if 1
+#if 0
 static struct imx_ipuv3_platform_data wand_ipu_data[] = {
 	{
 		.rev		= 4,
@@ -498,7 +498,7 @@ static __init void wand_init_ipu(void) {
 }
 #endif
 
-#if 1
+#if 0
 /****************************************************************************
  *                                                                          
  * HDMI
@@ -1182,9 +1182,9 @@ static void __init wand_board_init(void) {
 	wand_init_i2c();
 	//wand_init_audio();
 	//wand_init_ethernet();
-	//wand_init_usb();
-	wand_init_ipu();
-	wand_init_hdmi();
+	wand_init_usb();
+	//wand_init_ipu();
+	//wand_init_hdmi();
 	/*
 	 * commented lcd due to gpios and spi3 is used
 	 * on the DISP0_DAT0 - DISP0_DAT9
