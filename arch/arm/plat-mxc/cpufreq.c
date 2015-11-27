@@ -133,8 +133,9 @@ int set_cpu_freq(int freq)
 			ret = regulator_set_voltage(soc_regulator, soc_volt,
 							soc_volt);
 			if (ret < 0) {
-				printk(KERN_ERR
-					"COULD NOT SET SOC VOLTAGE BACK!!!!\n");
+#warning "the message below appears quite frequently. Fix this issue and uncomment strings below."
+				//printk(KERN_ERR
+				//	"COULD NOT SET SOC VOLTAGE BACK!!!!\n");
 				goto err6;
 			}
 		}
