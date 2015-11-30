@@ -211,8 +211,18 @@ static const struct imxuart_platform_data uart0 = {
 		.gpio_rs485_txen = -1,
 };
 static const struct imxuart_platform_data uart1 = {
-		.gpio_rs485_txen = IMX_GPIO_NR(6, 31),
+		.gpio_rs485_txen = IMX_GPIO_NR(6, 5),
 		.gpio_rs485_name = "gpio_rs485",
+};
+
+static const struct imxuart_platform_data uart2 = {
+		.gpio_rs485_txen = -1,
+};
+static const struct imxuart_platform_data uart3 = {
+		.gpio_rs485_txen = -1,
+};
+static const struct imxuart_platform_data uart4 = {
+		.gpio_rs485_txen = -1,
 };
 
 static __init void wand_init_uart(void) {
