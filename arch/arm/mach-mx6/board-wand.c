@@ -206,30 +206,39 @@ static void __init wand_init_i2c(void) {
  * Initialize UARTs
  *                                                                          
  ****************************************************************************/
- 
+
+static const struct imxuart_platform_data uart0 = {
+		.gpio_rs485_txen = -1,
+};
+static const struct imxuart_platform_data uart1 = {
+		.gpio_rs485_txen = IMX_GPIO_NR(6, 31),
+		.gpio_rs485_name = "gpio_rs485",
+};
+
 static __init void wand_init_uart(void) {
+
 
 	/* UART1 with cts rts support.*/
 	IMX6_SETUP_PAD( CSI0_DAT10__UART1_TXD );
 	IMX6_SETUP_PAD( CSI0_DAT11__UART1_RXD );
 	IMX6_SETUP_PAD( EIM_D19__UART1_CTS );
 	IMX6_SETUP_PAD( EIM_D20__UART1_RTS );
-	imx6q_add_imx_uart(0, NULL);
+	imx6q_add_imx_uart(0, &uart0);
 
 	/* UART2.*/
 	IMX6_SETUP_PAD(GPIO_8__UART2_TXD);
 	IMX6_SETUP_PAD(GPIO_7__UART2_RXD);
-	imx6q_add_imx_uart(1, NULL);
+	imx6q_add_imx_uart(1, &uart1);
 
 	/* UART3.*/
 	IMX6_SETUP_PAD(EIM_D24__UART3_TXD);
 	IMX6_SETUP_PAD(EIM_D25__UART3_RXD);
-	imx6q_add_imx_uart(2, NULL);
+	imx6q_add_imx_uart(2, &uart2);
 
 	/* UART4.*/
 	IMX6_SETUP_PAD(CSI0_DAT12__UART4_TXD);
 	IMX6_SETUP_PAD(CSI0_DAT13__UART4_RXD);
-	imx6q_add_imx_uart(3, NULL);
+	imx6q_add_imx_uart(3, &uart3);
 
 	/* UART5.
 	 * @todo
@@ -239,7 +248,7 @@ static __init void wand_init_uart(void) {
 	 * */
 	IMX6_SETUP_PAD(CSI0_DAT14__UART5_TXD);
 	IMX6_SETUP_PAD(CSI0_DAT15__UART5_RXD);
-	imx6q_add_imx_uart(4, NULL);
+	imx6q_add_imx_uart(4, &uart4);
 }
 
 

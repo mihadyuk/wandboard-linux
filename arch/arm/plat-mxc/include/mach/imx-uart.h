@@ -34,6 +34,8 @@ struct imxuart_platform_data {
 	unsigned short transceiver_delay;
 	unsigned int dma_req_rx;
 	unsigned int dma_req_tx;
+	int gpio_rs485_txen;
+	const char *gpio_rs485_name;
 };
 
 #endif

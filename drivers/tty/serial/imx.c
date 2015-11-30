@@ -52,6 +52,8 @@
 #include <mach/dma.h>
 #include <mach/hardware.h>
 #include <mach/imx-uart.h>
+#include <linux/gpio.h>
+#include <mach/gpio.h>
 
 
 /* Register definitions */
@@ -213,6 +215,8 @@ struct imx_port {
 	unsigned int		dma_tx_nents;
 	bool			dma_is_rxing;
 	wait_queue_head_t	dma_wait;
+	int gpio_rs485_txen;
+	const char *gpio_rs485_name;
 };
 
 struct imx_port_ucrs {
@@ -340,11 +344,27 @@ static void imx_stop_tx(struct uart_port *port)
 			temp |= UCR4_DREN;
 			writel(temp, sport->port.membase + UCR4);
 		}
+		if (sport->gpio_rs485_txen >= 0) {
+			gpio_set_value(sport->gpio_rs485_txen, 0);
+			//printk(KERN_WARNING "gpio %d reset", sport->gpio_rs485_txen);
+		}
 		return;
 	}
 
+	/* disable interrupts.*/
 	temp = readl(sport->port.membase + UCR1);
 	writel(temp & ~UCR1_TXMPTYEN, sport->port.membase + UCR1);
+
+	/* wait for finish tx operations.*/
+	while (!(readl(sport->port.membase + USR2) & USR2_TXDC)) {
+		udelay(5);
+		barrier();
+	}
+
+	if (sport->gpio_rs485_txen >= 0) {
+		gpio_set_value(sport->gpio_rs485_txen, 0);
+		//printk(KERN_WARNING "gpio %d reset", sport->gpio_rs485_txen);
+	}
 }
 
 /*
@@ -477,6 +497,10 @@ static void imx_start_tx(struct uart_port *port)
 	struct imx_port *sport = (struct imx_port *)port;
 	unsigned long temp;
 
+	if (sport->gpio_rs485_txen >= 0) {
+		gpio_set_value(sport->gpio_rs485_txen, 1);
+		//printk(KERN_WARNING "gpio %d set", sport->gpio_rs485_txen);
+	}
 	if (USE_IRDA(sport)) {
 		/* half duplex in IrDA mode; have to disable receive mode */
 		temp = readl(sport->port.membase + UCR4);
@@ -1751,6 +1775,9 @@ static int serial_imx_probe(struct platform_device *pdev)
 	void __iomem *base;
 	int ret = 0;
 	struct resource *res;
+	int retval;
+
+	pdata = pdev->dev.platform_data;
 
 	sport = kzalloc(sizeof(*sport), GFP_KERNEL);
 	if (!sport)
@@ -1766,6 +1793,34 @@ static int serial_imx_probe(struct platform_device *pdev)
 	if (!base) {
 		ret = -ENOMEM;
 		goto free;
+	}
+
+	/* init rs485 direction pin.*/
+	sport->gpio_rs485_txen = -1;
+	sport->gpio_rs485_name = NULL;
+	if (pdata) {
+		if (pdata->gpio_rs485_txen >= 0) {
+			retval = gpio_request_one(pdata->gpio_rs485_txen,
+									  GPIOF_DIR_OUT | GPIOF_INIT_LOW,
+									  pdata->gpio_rs485_name);
+			if (retval >= 0) {
+				sport->gpio_rs485_name = pdata->gpio_rs485_name;
+				sport->gpio_rs485_txen = pdata->gpio_rs485_txen;
+				printk(KERN_WARNING "initialized gpio: %d",
+						pdata->gpio_rs485_txen);
+			}
+			else {
+				printk(KERN_WARNING \
+					 "Unable to init rs485 gpio %d. We won't use dir control.\n",
+					 pdata->gpio_rs485_txen);
+			}
+			/*sport->gpio_rs485_name = pdata->gpio_rs485_name;*/
+			/*sport->gpio_rs485_txen = pdata->gpio_rs485_txen;*/
+			//printk(KERN_WARNING "init gpio");
+		}
+	}
+	else {
+		printk(KERN_WARNING "pdata is null pointer");
 	}
 
 	sport->port.dev = &pdev->dev;
@@ -1845,6 +1900,12 @@ static int serial_imx_remove(struct platform_device *pdev)
 	struct imx_port *sport = platform_get_drvdata(pdev);
 
 	pdata = pdev->dev.platform_data;
+
+	/* free used gpio for rs485 direction control.*/
+	if (pdata->gpio_rs485_txen >= 0) {
+		gpio_free(pdata->gpio_rs485_txen);
+		printk(KERN_WARNING "free gpio %d", pdata->gpio_rs485_txen);
+	}
 
 	platform_set_drvdata(pdev, NULL);
 
