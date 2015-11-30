@@ -211,8 +211,7 @@ static const struct imxuart_platform_data uart0 = {
 		.gpio_rs485_txen = -1,
 };
 static const struct imxuart_platform_data uart1 = {
-		.gpio_rs485_txen = IMX_GPIO_NR(6, 5),
-		.gpio_rs485_name = "gpio_rs485",
+		.gpio_rs485_txen = -1,
 };
 
 static const struct imxuart_platform_data uart2 = {
@@ -222,7 +221,9 @@ static const struct imxuart_platform_data uart3 = {
 		.gpio_rs485_txen = -1,
 };
 static const struct imxuart_platform_data uart4 = {
-		.gpio_rs485_txen = -1,
+		.gpio_rs485_txen = IMX_GPIO_NR(6, 5),
+		.gpio_rs485_name = "gpio_rs485",
+
 };
 
 static __init void wand_init_uart(void) {
@@ -259,6 +260,7 @@ static __init void wand_init_uart(void) {
 	 * */
 	IMX6_SETUP_PAD(CSI0_DAT14__UART5_TXD);
 	IMX6_SETUP_PAD(CSI0_DAT15__UART5_RXD);
+	IMX6_SETUP_PAD(CSI0_DAT19__GPIO_6_5);
 	imx6q_add_imx_uart(4, &uart4);
 }
 
