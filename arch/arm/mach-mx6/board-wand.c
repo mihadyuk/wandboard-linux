@@ -242,7 +242,7 @@ static __init void wand_init_uart(void) {
 	IMX6_SETUP_PAD(GPIO_7__UART2_TXD);
 	//IMX6_SETUP_PAD(GPIO_7__GPIO_1_7);
 	imx6q_add_imx_uart(1, &uart1);
-
+#if 0
 	/* UART3.*/
 	IMX6_SETUP_PAD(EIM_D24__UART3_TXD);
 	IMX6_SETUP_PAD(EIM_D25__UART3_RXD);
@@ -263,6 +263,7 @@ static __init void wand_init_uart(void) {
 	IMX6_SETUP_PAD(CSI0_DAT15__UART5_RXD);
 	IMX6_SETUP_PAD(CSI0_DAT19__GPIO_6_5);
 	imx6q_add_imx_uart(4, &uart4);
+#endif
 }
 
 
