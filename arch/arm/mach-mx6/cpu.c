@@ -67,6 +67,14 @@ static int mx6_get_srev(void)
 		return IMX_CHIP_REVISION_1_2;
 	else if (rev == 3)
 		return IMX_CHIP_REVISION_1_3;
+	else if (rev == 4)
+		return IMX_CHIP_REVISION_1_4;
+	else if (rev == 5)
+		return IMX_CHIP_REVISION_1_5;
+	else if (rev == 6)
+		return IMX_CHIP_REVISION_1_6;
+	else if (rev == 7)
+		return IMX_CHIP_REVISION_1_7;
 
 	return IMX_CHIP_REVISION_UNKNOWN;
 }
