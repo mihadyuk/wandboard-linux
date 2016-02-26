@@ -50,8 +50,8 @@
 
 //#define WAND_PCIE_NRST		IMX_GPIO_NR(3, 31)
 
-//#define WAND_RGMII_INT		IMX_GPIO_NR(1, 28)
-//#define WAND_RGMII_RST		IMX_GPIO_NR(3, 29)
+#define RGMII_INT		IMX_GPIO_NR(1, 28)
+#define RGMII_RST		IMX_GPIO_NR(2, 23)
 
 //#define WAND_SD1_CD		IMX_GPIO_NR(1, 1)
 //#define WAND_SD1_WP		IMX_GPIO_NR(1, 9)
@@ -389,15 +389,17 @@ void __init wand_init_audio(void) {
  * @todo
  * Find out how to configure ET1011C2-CI-D. Now this task has low priority.
  * */
+#if 1
 #if 0
 static int wand_fec_phy_init(struct phy_device *phydev) {
+
 	unsigned short val;
 
 	/* Enable AR8031 125MHz clk */
 	phy_write(phydev, 0x0d, 0x0007); /* Set device address to 7*/
 	phy_write(phydev, 0x00, 0x8000); /* Apply by soft reset */
-	udelay(500); 
-        
+	udelay(500);
+
 	phy_write(phydev, 0x0e, 0x8016); /* set mmd reg */
 	phy_write(phydev, 0x0d, 0x4007); /* apply */
 
@@ -405,7 +407,7 @@ static int wand_fec_phy_init(struct phy_device *phydev) {
 	val &= 0xffe3;
 	val |= 0x18;
 	phy_write(phydev, 0xe, val);
-	phy_write(phydev, 0x0d, 0x4007); /* Post data */        
+	phy_write(phydev, 0x0d, 0x4007); /* Post data */
 
 	/* Introduce random tx clock delay. Why is this needed? */
 	phy_write(phydev, 0x1d, 0x5);
@@ -413,6 +415,13 @@ static int wand_fec_phy_init(struct phy_device *phydev) {
 	val |= 0x0100;
 	phy_write(phydev, 0x1e, val);
 
+	return 0;
+}
+#endif
+
+static int wand_fec_phy_init(struct phy_device *phydev) {
+
+	(void)phydev;
 	return 0;
 }
 
@@ -423,40 +432,69 @@ static int wand_fec_power_hibernate(struct phy_device *phydev) { return 0; }
 /* ------------------------------------------------------------------------ */
 
 static struct fec_platform_data wand_fec_data = {
-	.init			= wand_fec_phy_init,
+	.init				= wand_fec_phy_init,
 	.power_hibernate	= wand_fec_power_hibernate,
-	.phy			= PHY_INTERFACE_MODE_RGMII,
+	.phy				= PHY_INTERFACE_MODE_RGMII,
 	.phy_noscan_mask	= ~2, /* phy is on adress 1 */
+#ifdef CONFIG_MX6_ENET_IRQ_TO_GPIO
+        .gpio_irq = RGMII_INT;
+#endif
 };
 
 /* ------------------------------------------------------------------------ */
 
+/* RGMII interface
+ *
+ * GTX_CLK(77)  - TXC   	- ENET_REF_CLK(V22). Connected to ENET_TX_CLK(V22).
+ * 							  It should be connected to RGMII_TXC(D21)
+ *
+ * TXD0(80)		- TXD0		- RGMII_TD0(C22)
+ * TXD1(81)		- TXD1		- RGMII_TD1(F20)
+ * TXD2(82)		- TXD2		- RGMII_TD2(E21)
+ * TXD3(83)		- TXD3		- RGMII_TD3(A24)
+ * TX_EN(79)	- TX_CTL	- RGMII_TX_CTL(C23)
+ *
+ * RX_CLK(72)	- RXC		- RGMII_RXC(B25)
+ * RXD0(68)		- RXD0		- RGMII_RD0(C24)
+ * RXD1(67)		- RXD1		- RGMII_RD1(B23)
+ * RXD2(66)		- RXD2		- RGMII_RD2(B24)
+ * RXD3(65)		- RXD3		- RGMII_RD3(D23)
+ * RX_DV(69)	- RX_CTL	- RGMII_RX_CTL(D22)
+ *
+ * Control interface
+ *
+ * RESET_N(24)	- RESET_N	- EIM_CS0(H24) 		- GPIO2_IO23
+ * MDC(55)		- MDC		- ENET_MDC(V20)
+ * MDIO(54)		- MDIO		- ENET_MDIO(V23)
+ * MDINT_N(53)	- MDINT_N	- ENET_TX_EN(V21) 	- GPIO1_IO28
+ *
+ * */
 static __init void wand_init_ethernet(void) {
 	IMX6_SETUP_PAD( ENET_MDIO__ENET_MDIO );
 	IMX6_SETUP_PAD( ENET_MDC__ENET_MDC );
-	IMX6_SETUP_PAD( ENET_REF_CLK__ENET_TX_CLK );
+
+	//IMX6_SETUP_PAD( ENET_REF_CLK__ENET_TX_CLK );
 	IMX6_SETUP_PAD( RGMII_TXC__ENET_RGMII_TXC );
 	IMX6_SETUP_PAD( RGMII_TD0__ENET_RGMII_TD0 );
 	IMX6_SETUP_PAD( RGMII_TD1__ENET_RGMII_TD1 );
 	IMX6_SETUP_PAD( RGMII_TD2__ENET_RGMII_TD2 );
 	IMX6_SETUP_PAD( RGMII_TD3__ENET_RGMII_TD3 );
 	IMX6_SETUP_PAD( RGMII_TX_CTL__ENET_RGMII_TX_CTL );
+
 	IMX6_SETUP_PAD( RGMII_RXC__ENET_RGMII_RXC );
 	IMX6_SETUP_PAD( RGMII_RD0__ENET_RGMII_RD0 );
 	IMX6_SETUP_PAD( RGMII_RD1__ENET_RGMII_RD1 );
 	IMX6_SETUP_PAD( RGMII_RD2__ENET_RGMII_RD2 );
 	IMX6_SETUP_PAD( RGMII_RD3__ENET_RGMII_RD3 );
 	IMX6_SETUP_PAD( RGMII_RX_CTL__ENET_RGMII_RX_CTL );                
-	IMX6_SETUP_PAD( ENET_TX_EN__GPIO_1_28 );
-	IMX6_SETUP_PAD( EIM_D29__GPIO_3_29 );
-        
-	gpio_request(WAND_RGMII_RST, "rgmii reset");
-	gpio_direction_output(WAND_RGMII_RST, 0);
-#ifdef CONFIG_FEC_1588
-	mxc_iomux_set_gpr_register(1, 21, 1, 1);
-#endif
+
+	gpio_request(RGMII_RST, "rgmii reset");
+	gpio_direction_output(RGMII_RST, 0);
+//#ifdef CONFIG_FEC_1588
+//	mxc_iomux_set_gpr_register(1, 21, 1, 1);
+//#endif
 	msleep(10);
-	gpio_set_value(WAND_RGMII_RST, 1);
+	gpio_set_value(RGMII_RST, 1);
 	imx6_init_fec(wand_fec_data);
 }
 #endif
@@ -1207,7 +1245,7 @@ static void __init wand_board_init(void) {
 	wand_init_sd();
 	wand_init_i2c();
 	//wand_init_audio();
-	//wand_init_ethernet();
+	wand_init_ethernet();
 	wand_init_usb();
 	//wand_init_ipu();
 	//wand_init_hdmi();
