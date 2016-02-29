@@ -445,7 +445,7 @@ static struct fec_platform_data wand_fec_data = {
 
 /* RGMII interface
  *
- * GTX_CLK(77)  - TXC   	- ENET_REF_CLK(V22). Connected to ENET_TX_CLK(V22).
+ * GTX_CLK(77)  - TXC   	- ENET_REF_CLK(V22). Connected to ENET_REF_CLK(V22).
  * 							  It should be connected to RGMII_TXC(D21)
  *
  * TXD0(80)		- TXD0		- RGMII_TD0(C22)
@@ -460,6 +460,28 @@ static struct fec_platform_data wand_fec_data = {
  * RXD2(66)		- RXD2		- RGMII_RD2(B24)
  * RXD3(65)		- RXD3		- RGMII_RD3(D23)
  * RX_DV(69)	- RX_CTL	- RGMII_RX_CTL(D22)
+ *
+ * MII interface: Connected with mistakes.
+ *
+ * TX_CLK(75)	- TX_CLK	- RGMII_TXC(D21)
+ * GTX_CLK(77)	- GTX_CLK	- ENET_REF_CLK(V22)
+ * TX_ER(78)	- TX_ER		- not connected.
+ * TX_EN(79)	- TX_EN		- RGMII_TX_CTL(C23). Connect to ENET_TX_EN
+ * TXD0(80)		- TXD0		- RGMII_TD0(C22). Connect to ENET_TX_DATA0
+ * TXD1(81)		- TXD1		- RGMII_TD1(F20). Connect to ENET_TX_DATA1
+ * TXD2(82)		- TXD2		- RGMII_TD2(E21). Connect to ENET_TX_DATA2
+ * TXD3(83)		- TXD3		- RGMII_TD3(A24). Connect to ENET_TX_DATA3
+ *
+ * RX_CLK(72)	- RXC		- RGMII_RXC(B25). Connect to ENET_RX_CLK
+ * RX_ER(70)	- RX_ER		- ENET_RX_ER(W23)
+ * RX_DV(69)	- RX_DV		- RGMII_RX_CTL(D22). In which pin should it be connected?
+ * RXD0(68)		- RXD0		- RGMII_RD0(C24). Connect to ENET_RX_DATA0
+ * RXD1(67)		- RXD1		- RGMII_RD1(B23). Connect to ENET_RX_DATA0
+ * RXD2(66)		- RXD2		- RGMII_RD2(B24). Connect to ENET_RX_DATA0
+ * RXD3(65)		- RXD3		- RGMII_RD3(D23). Connect to ENET_RX_DATA0
+ *
+ * CRS(74)		- CRS		- ENET_CRS_DV(U21). Connect to ENET_CRS
+ * COL(73)		- COL		- ENET_RX_D1(W22). Connect to ENET_COL
  *
  * Control interface
  *
