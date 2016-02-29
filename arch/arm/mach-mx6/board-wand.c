@@ -422,6 +422,18 @@ static int wand_fec_phy_init(struct phy_device *phydev) {
 static int wand_fec_phy_init(struct phy_device *phydev) {
 
 	(void)phydev;
+#if 0
+	printk(KERN_WARNING "setting 10 MB/s");
+	int retval = phy_read(phydev, 0x00);
+	if (retval < 0) {
+		printk(KERN_ERR "unable to read reg 0x00");
+		return 0;
+	}
+	unsigned short reg = (unsigned short)retval;
+	reg &= ~(1 << 6 | 1 << 13);
+	printk(KERN_WARNING "reg to write %d", reg);
+	phy_write(phydev, 0x00, reg);
+#endif
 	return 0;
 }
 
