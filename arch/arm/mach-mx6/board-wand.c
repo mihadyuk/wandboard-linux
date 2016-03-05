@@ -422,18 +422,44 @@ static int wand_fec_phy_init(struct phy_device *phydev) {
 static int wand_fec_phy_init(struct phy_device *phydev) {
 
 	(void)phydev;
-#if 0
-	printk(KERN_WARNING "setting 10 MB/s");
+#if 1
+	printk(KERN_WARNING "setting 10 MB/s, full duplex");
 	int retval = phy_read(phydev, 0x00);
 	if (retval < 0) {
 		printk(KERN_ERR "unable to read reg 0x00");
 		return 0;
 	}
+
 	unsigned short reg = (unsigned short)retval;
-	reg &= ~(1 << 6 | 1 << 13);
-	printk(KERN_WARNING "reg to write %d", reg);
-	phy_write(phydev, 0x00, reg);
+	reg &= ~(1 << 6 | 1 << 13); //enable 10 Mb
+	reg |= 1 << 8; //enable full duplex
+
+	printk(KERN_WARNING "reg to write 0x%.4X", reg);
+	retval = phy_write(phydev, 0x00, reg);
+	printk(KERN_WARNING "retval: %d", retval);
+
+
+
+	printk(KERN_WARNING "init reg 22");
+	retval = phy_read(phydev, 22);
+	if (retval < 0) {
+		printk(KERN_ERR "unable to read reg 22");
+		return 0;
+	}
+	reg = (unsigned short)retval;
+	printk(KERN_WARNING "reg: 0x%.4X", reg);
+
+	reg &= ~0b111;
+	reg |= 0b100;//rgmii trace delay mode
+
+	reg |= 1 << 4;//enable ref clock
+
+	printk(KERN_WARNING "reg to write 0x%.4X", reg);
+	retval = phy_write(phydev, 22, reg);
+	printk(KERN_WARNING "retval: %d", retval);
+
 #endif
+
 	return 0;
 }
 
@@ -530,6 +556,7 @@ static __init void wand_init_ethernet(void) {
 //#endif
 	msleep(10);
 	gpio_set_value(RGMII_RST, 1);
+	msleep(10);
 	imx6_init_fec(wand_fec_data);
 }
 #endif
