@@ -450,7 +450,8 @@ static int wand_fec_phy_init(struct phy_device *phydev) {
 	printk(KERN_WARNING "reg: 0x%.4X", reg);
 
 	reg &= ~0b111;
-	reg |= 0b100;//rgmii trace delay mode
+	//reg |= 0b100;//rgmii trace delay mode
+	reg |= 0b110;//rgmii DLL delay mode
 
 	reg |= 1 << 4;//enable ref clock
 
