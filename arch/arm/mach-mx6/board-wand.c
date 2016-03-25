@@ -197,7 +197,12 @@ static void __init wand_init_i2c(void) {
  * Initialize debug console (UART1)
  *                                                                          
  ****************************************************************************/
- 
+static const struct imxuart_platform_data uart1 = {
+		.flags = IMXUART_SDMA,
+		.dma_req_rx = MX6Q_DMA_REQ_UART2_RX,
+		.dma_req_tx = MX6Q_DMA_REQ_UART2_TX,
+};
+
 static __init void wand_init_uart(void) {
         IMX6_SETUP_PAD( CSI0_DAT10__UART1_TXD );
         IMX6_SETUP_PAD( CSI0_DAT11__UART1_RXD );
@@ -209,7 +214,7 @@ static __init void wand_init_uart(void) {
 	/* enable uart2 on EIM_D27, EIM_D26*/
 	IMX6_SETUP_PAD(EIM_D27__UART2_RXD);
 	IMX6_SETUP_PAD(EIM_D26__UART2_TXD);
-	imx6q_add_imx_uart(1, NULL);
+	imx6q_add_imx_uart(1, &uart1);
 }
 
 
