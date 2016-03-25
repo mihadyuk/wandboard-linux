@@ -207,8 +207,8 @@ static __init void wand_init_uart(void) {
 	imx6q_add_imx_uart(0, NULL);
 
 	/* enable uart2 on EIM_D27, EIM_D26*/
-	IMX6_SETUP_PAD(EIM_D27__UART2_TXD);
-	IMX6_SETUP_PAD(EIM_D26__UART2_RXD);
+	IMX6_SETUP_PAD(EIM_D27__UART2_RXD);
+	IMX6_SETUP_PAD(EIM_D26__UART2_TXD);
 	imx6q_add_imx_uart(1, NULL);
 }
 
