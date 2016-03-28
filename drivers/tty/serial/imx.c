@@ -355,13 +355,14 @@ static void imx_stop_tx(struct uart_port *port)
 	temp = readl(sport->port.membase + UCR1);
 	writel(temp & ~UCR1_TXMPTYEN, sport->port.membase + UCR1);
 
-	/* wait for finish tx operations.*/
-	while (!(readl(sport->port.membase + USR2) & USR2_TXDC)) {
-		udelay(5);
-		barrier();
-	}
+
 
 	if (sport->gpio_rs485_txen >= 0) {
+		/* wait for finish tx operations.*/
+		while (!(readl(sport->port.membase + USR2) & USR2_TXDC)) {
+			udelay(5);
+			barrier();
+		}
 		gpio_set_value(sport->gpio_rs485_txen, 0);
 		//printk(KERN_WARNING "gpio %d reset", sport->gpio_rs485_txen);
 	}
