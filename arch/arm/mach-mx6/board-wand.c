@@ -206,36 +206,54 @@ static void __init wand_init_i2c(void) {
  * Initialize UARTs
  *                                                                          
  ****************************************************************************/
-
+/*
+ * @todo
+ *
+ * dma is disabled due to it is unstable.
+ * Often time "we cannot prepare for the RX slave" is appeared or for Tx slave.
+ * http://www.spinics.net/lists/arm-kernel/msg256391.html
+ * It seems newer kernel should be used.
+ *
+ * */
 static const struct imxuart_platform_data uart0 = {
+/*
 		.flags 		= IMXUART_SDMA,
 		.dma_req_rx = MX6Q_DMA_REQ_UART1_RX,
 		.dma_req_tx = MX6Q_DMA_REQ_UART1_TX,
+*/
 		.gpio_rs485_txen = -1,
 };
 static const struct imxuart_platform_data uart1 = {
+/*
 		.flags 		= IMXUART_SDMA,
 		.dma_req_rx = MX6Q_DMA_REQ_UART2_RX,
 		.dma_req_tx = MX6Q_DMA_REQ_UART2_TX,
+*/
 		.gpio_rs485_txen = -1,
 };
 
 static const struct imxuart_platform_data uart2 = {
+/*
 		.flags 		= IMXUART_SDMA,
 		.dma_req_rx = MX6Q_DMA_REQ_UART3_RX,
 		.dma_req_tx = MX6Q_DMA_REQ_UART3_TX,
+*/
 		.gpio_rs485_txen = -1,
 };
 static const struct imxuart_platform_data uart3 = {
+/*
 		.flags 		= IMXUART_SDMA,
 		.dma_req_rx = MX6Q_DMA_REQ_UART4_RX,
 		.dma_req_tx = MX6Q_DMA_REQ_UART4_TX,
+*/
 		.gpio_rs485_txen = -1,
 };
 static const struct imxuart_platform_data uart4 = {
+/*
 		.flags 		= IMXUART_SDMA,
 		.dma_req_rx = MX6Q_DMA_REQ_UART5_RX,
 		.dma_req_tx = MX6Q_DMA_REQ_UART5_TX,
+*/
 		.gpio_rs485_txen = IMX_GPIO_NR(6, 5),
 		.gpio_rs485_name = "gpio_rs485",
 
